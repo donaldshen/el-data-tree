@@ -519,25 +519,7 @@ export default {
      * @public
      */
     updateCheckedKeys(keys) {
-      //设置checkedKeys的时候，设置父节点，子节点全部也被选中了
-      //解决方案：过滤掉有孩子节点的key，不设置checked状态
-      const flattenTree = (array, children) =>
-        array.reduce(
-          (sum, node) =>
-            sum.concat(
-              node[children] ? flattenTree(node[children], children) : node
-            ),
-          []
-        )
-
-      const checkedKeys = flattenTree(
-        this.treeData,
-        this.treeAttributes.props.children
-      )
-        .filter(node => keys.indexOf(node[this.nodeKey]) > -1)
-        .map(node => node[this.nodeKey])
-
-      this.$refs.tree.setCheckedKeys(checkedKeys)
+      this.$refs.tree.setCheckedKeys(keys)
     },
     handleCommand(command, data, node) {
       const handler = {
