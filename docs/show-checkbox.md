@@ -4,9 +4,13 @@
 <template>
   <div>
     <el-data-tree v-bind="$data" 
-      :checkedKeys.sync="checkedKeys" 
-      @check-change="handleCheckChange"
-      ref="tree" />
+      :checkedKeys.sync="checkedKeys"
+      ref="tree">
+      <span slot="node-label" slot-scope="{ data }">
+        <el-tag size="small">{{ data.id }}</el-tag>
+        {{ data.name }}
+      </span>
+    </el-data-tree>
     <div>
       <el-button @click="setCheckedKeys">通过key设置</el-button>
       <el-button @click="getCheckedNodes">通过node获取</el-button>
@@ -45,9 +49,6 @@ export default {
     resetChecked() {
       this.checkedKeys = []
     },
-    handleCheckChange(data, checked, indeterminate) {
-      console.log(data, checked, indeterminate)
-    }
   }
 }
 </script>

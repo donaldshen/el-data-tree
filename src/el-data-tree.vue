@@ -499,19 +499,16 @@ export default {
       return this.$refs.tree
     },
     /**
-     * 节点选中状态发生变化时的回调
-     * 共三个参数，依次为：
-     * 传递给 data 属性的数组中该节点所对应的对象
-     * 节点本身是否被选中
-     * 节点的子树中是否有被选中的节点
+     * 节点选中状态发生变化时，更新当前选中的列表，有以下两种情况：
+     * 1. if checkStrictly，则 getCheckedKeys(false) 返回所有被选中的节点
+     * 2. if !checkStrictly，则 getCheckedKeys(true) 仅返回被选中的叶节点
+     * 原因是，!checkStrictly 时，父节点的选中状态完全取决于子节点的选中状态，其本身仅仅是作为全选子节点的开关而已。因此其自身是否被选中是无意义的
      */
     handleCheckChange() {
-      // 获取选择的节点，如果节点被选中，则父节点也会选中
-      const checkNodes = this.$refs.tree.getCheckedNodes(false, true)
-      this.$emit(
-        'update:checkedKeys',
-        checkNodes.map(item => item[this.nodeKey])
-      )
+      const {checkStrictly = false} = this.treeAttributes
+      const checkedKeys = this.$refs.tree.getCheckedKeys(!checkStrictly)
+      // console.log('handleCheckChange', checkedKeys)
+      this.$emit('update:checkedKeys', checkedKeys)
     },
     /**
      * 选中指定节点
@@ -519,6 +516,7 @@ export default {
      * @public
      */
     updateCheckedKeys(keys) {
+      // console.log('updateCheckedKeys', keys)
       this.$refs.tree.setCheckedKeys(keys)
     },
     handleCommand(command, data, node) {
